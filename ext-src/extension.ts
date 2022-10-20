@@ -1,5 +1,6 @@
 import * as path from 'path';
 import * as vscode from 'vscode';
+import * as child from 'child_process';
 
 export function activate(context: vscode.ExtensionContext) {
 	let disposable = vscode.commands.registerCommand('blazor-webview.start', () => {
@@ -69,6 +70,8 @@ export function deactivate() {}
 					return;
 			}
 		}, null, this._disposables);
+
+		const res = child.execFile('c:\\program files\\dotnet\\dotnet.exe', ["run", "-p", path.join(this._extensionPath, BlazorPanel.appName, BlazorPanel.appName + '.csproj')]);
 	}
 
 	public doRefactor() {
@@ -106,34 +109,10 @@ export function deactivate() {}
 			<html lang="en">
 			
 			<head>
-				<meta charset="utf-8" />
-				<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-				<title>blazorApp</title>
-				<base href="${baseUrl}">
-				<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src https:; img-src vscode-resource: https: data:; script-src 'unsafe-inline' 'unsafe-eval' https:; style-src vscode-resource: 'unsafe-inline' http: https: data:; font-src https:">
-				<link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
-				<link href="css/app.css" rel="stylesheet" />
-				<link href="${BlazorPanel.appName+'.styles.css'}" rel="stylesheet" />
 			</head>
 			
 			<body>
-			<div id="app">Loading...</div>
-				<div id="blazor-error-ui">
-					An unhandled error has occurred.
-					<a href="" class="reload">Reload</a>
-					<a class="dismiss">🗙</a>
-				</div>
-				<script nonce="${nonce}" src="_framework/blazor.webassembly.js" autostart="false"></script>
-				<script nonce="${nonce}">
-
-					// WARNING - WORKAROUND NOT GUARANTEED TO WORK IN FUTURE
-					// Without this line of script, Blazor 6.0 (and likely 7.0) will through an exception on launch of the blazorApp, and fail to load properly.
-					// The Blazor team is looking at this problem, and will likely address in a future version of Blazor.
-					// Issue tracking this problem: https://github.com/dotnet/aspnetcore/issues/26790
-					Blazor._internal.navigationManager.getLocationHref = () => document.baseURI;
-					
-					Blazor.start();
-				</script>
+				<iframe src='https://localhost:7208/' width="100%" height="800px"/>
 			</body>
 			
 			</html>`;
